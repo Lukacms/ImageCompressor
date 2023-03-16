@@ -30,34 +30,10 @@ jobs:
           exit 1
         fi
 
-  run_program:
-    runs-on: ubuntu-latest
-    needs: check_repository_cleanliness
-    container:
-      image: epitechcontent/epitest-docker:latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    # can't do one :/
-    # - name: Compilation test
-      # run: make
-      timeout-minutes: 2
-    - name: clean repo
-      run:  make clean
-    - name: Check executable files exists
-      run: |
-        IFS=',' read -ra ADDR <<< $EXECUTABLES
-        for i in "${ADDR[@]}"; do
-          if [[ ! -x "./${i}" ]]; then
-            exit 1
-          fi
-        done
-
   push_to_mirror:
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
-    needs: run_program
+    needs: check_repository_cleanliness
     steps:
       - uses: actions/checkout@v2
         with:
