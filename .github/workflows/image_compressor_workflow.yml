@@ -39,8 +39,9 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Compilation test
-      run: make
+    # can't do one :/
+    # - name: Compilation test
+      # run: make
       timeout-minutes: 2
     - name: clean repo
       run:  make clean

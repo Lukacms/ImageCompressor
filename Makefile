@@ -1,6 +1,6 @@
 ##
 ## EPITECH PROJECT, 2023
-## /home/lukac/Epitech/Tek2/FUN/wolfram/Makefile
+## FUN/ImageCompressor
 ## File description:
 ## Makefile
 ##
