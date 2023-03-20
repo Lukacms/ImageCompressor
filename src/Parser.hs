@@ -19,11 +19,11 @@ where
 import Foreign.Marshal.Unsafe
 import Text.Read (readMaybe)
 
-newtype Point = Point (Int, Int) deriving (Show)
+newtype Point = Point (Int, Int) deriving (Show, Eq)
 
-newtype Color = Color (Int, Int, Int) deriving (Show)
+newtype Color = Color (Int, Int, Int) deriving (Show, Eq)
 
-data Image = ParseError | Image [(Point, Color)] deriving (Show)
+data Image = ParseError | Image [(Point, Color)] deriving (Show, Eq)
 
 data Conf
   = OptsError
@@ -33,7 +33,7 @@ data Conf
         limit :: Maybe Double,
         image :: Image
       }
-  deriving (Show)
+  deriving (Show, Eq)
 
 defaultConf :: Conf
 defaultConf =
