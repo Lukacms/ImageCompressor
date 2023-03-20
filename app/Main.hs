@@ -1,6 +1,22 @@
+{-
+-- EPITECH PROJECT, 2023
+-- app
+-- File description:
+-- Main
+-}
+
 module Main (main) where
 
-import Lib
+import           Help               (printHelp)
+import           Parser             (Conf (..), defaultConf, getOpts)
+import           System.Environment (getArgs)
+import           System.Exit        (ExitCode (ExitFailure), exitSuccess,
+                                     exitWith)
 
-main :: IO ()
-main = someFunc
+launch:: Conf -> IO()
+launch OptsError = printHelp >> exitWith (ExitFailure 84)
+launch Help      = printHelp >> exitSuccess
+launch _         = exitSuccess
+
+main:: IO ()
+main = getArgs >>= launch . getOpts defaultConf
