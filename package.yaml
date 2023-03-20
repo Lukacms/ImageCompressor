@@ -21,6 +21,7 @@ description:         Please see the README on GitHub at <https://github.com/Luka
 
 dependencies:
 - base >= 4.7 && < 5
+- random
 
 ghc-options:
 - -Wall
@@ -46,6 +47,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - imageCompressor
+    - random
 
 tests:
   imageCompressor-test:

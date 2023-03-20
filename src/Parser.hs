@@ -17,11 +17,8 @@ module Parser
 where
 
 import Foreign.Marshal.Unsafe
+import ImageType ( Point(..), Color(..) )
 import Text.Read (readMaybe)
-
-newtype Point = Point (Int, Int) deriving (Show)
-
-newtype Color = Color (Int, Int, Int) deriving (Show)
 
 data Image = ParseError | Image [(Point, Color)] deriving (Show)
 
