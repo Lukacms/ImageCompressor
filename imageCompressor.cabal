@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      Help
       ImageType
       Parser
   other-modules:
