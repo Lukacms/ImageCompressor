@@ -4,6 +4,7 @@
 -- File description:
 -- Parser
 -}
+{-# OPTIONS_GHC -Wno-partial-fields #-}
 
 module Parser (Point(..), Color(..), getOpts, Image(..), defaultConf) where
 
@@ -28,9 +29,30 @@ defaultConf = Conf {
     image = ParseError
 }
 
+readPoint:: String -> Maybe Point
+readPoint x = case readMaybe x of
+    (Just(a, b)) -> Just (Point (a, b))
+    _            -> Nothing
+
+readColor:: String -> Maybe Color
+readColor x = case readMaybe x of
+    (Just(a, b, c)) -> Just (Color (a, b, c))
+    _               -> Nothing
+
+readLine:: [String] -> Maybe (Point, Color)
+readLine (x:s:_) = case (readPoint x, readColor s) of
+    (Just a, Just b) -> Just (a, b)
+    _                -> Nothing
+readLine [] = Nothing
+readLine _ = Nothing
+
 parseFile:: [String] -> Image
-parseFile [] = Image []
-parseFile _  = ParseError
+parseFile []     = Image []
+parseFile (x:xs) = case readLine (words x) of
+    Just line -> case parseFile xs of
+        ParseError  -> ParseError
+        (Image img) -> Image (line : img)
+    _         -> ParseError
 
 parse:: String -> Image
 parse a = parseFile (lines a)

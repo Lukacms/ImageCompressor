@@ -13,9 +13,9 @@ module ImageType (
     Cluster
 ) where
 
-import Data.List (intercalate)
+import           Data.List (intercalate)
 
-data Short = Short Int
+newtype Short = Short Int
 
 data Color = Color Short Short Short
 
