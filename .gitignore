@@ -27,3 +27,4 @@ cabal.project.local~
 
 # specific to project
 imageCompressor
+*.txt

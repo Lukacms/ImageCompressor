@@ -11,16 +11,16 @@ module Parser (Point(..), Color(..), getOpts, Image(..), defaultConf) where
 import           Foreign.Marshal.Unsafe
 import           Text.Read              (readMaybe)
 
-newtype Point   = Point (Int, Int)
-newtype Color   = Color (Int, Int, Int)
+newtype Point   = Point (Int, Int) deriving (Show)
+newtype Color   = Color (Int, Int, Int) deriving (Show)
 
-data Image  = ParseError | Image [(Point, Color)]
+data Image  = ParseError | Image [(Point, Color)] deriving (Show)
 
 data Conf   = OptsError | Conf {
     finalColorsNb :: Maybe Int,
     limit         :: Maybe Double,
     image         :: Image
-}
+} deriving (Show)
 
 defaultConf:: Conf
 defaultConf = Conf {
