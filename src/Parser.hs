@@ -16,32 +16,39 @@ module Parser
   )
 where
 
-import Foreign.Marshal.Unsafe
 import Text.Read (readMaybe)
 
-newtype Point = Point (Int, Int) deriving (Show)
+-- éviter écriture passive: une fonction => une action
+-- mettre les fonctions de bas en haut
+-- éviter d'utiliser des let in => le faire en fonction
 
-newtype Color = Color (Int, Int, Int) deriving (Show)
+-- function, function' qui continue l'exécution de la première fonction
 
-data Image = ParseError | Image [(Point, Color)] deriving (Show)
+-- deriving Show => intérêt que pour le débug
+-- si on utilise pas une ressource, ne pas l'utiliser (pas code de prod)
 
+newtype Point = Point (Int, Int)
+
+newtype Color = Color (Int, Int, Int)
+
+data Image = ParseError | Image [(Point, Color)]
+
+newtype FinalColorNumber = FinalColorNumber Int
+
+newtype Limit = Limit Int
+
+-- vraiment pas ouf
+-- s'appuie sur C/C++ donc pas les principes fonctionnels
+-- à utiliser juste pour du web ou une interface avec c++
+-- faire un type ColorNumber, limit
 data Conf
   = OptsError
   | Help
-  | Conf
-      { finalColorsNb :: Maybe Int,
-        limit :: Maybe Double,
-        image :: Image
-      }
-  deriving (Show)
+  | Conf FinalColorNumber Limit Image
 
 defaultConf :: Conf
 defaultConf =
-  Conf
-    { finalColorsNb = Nothing,
-      limit = Nothing,
-      image = ParseError
-    }
+  Conf (FinalColorNumber 0) (Limit 0) ParseError
 
 readPoint :: String -> Maybe Point
 readPoint x = case readMaybe x of
@@ -72,8 +79,8 @@ parse :: String -> Image
 parse a = parseFile (lines a)
 
 checkConf :: Conf -> Conf
-checkConf (Conf Nothing _ _) = OptsError
-checkConf (Conf _ Nothing _) = OptsError
+{- checkConf (Conf Nothing _ _) = OptsError
+checkConf (Conf _ Nothing _) = OptsError -}
 checkConf (Conf _ _ ParseError) = OptsError
 checkConf conf = conf
 
@@ -83,9 +90,9 @@ getOpts _ [_] = OptsError
 getOpts conf [] = checkConf conf
 getOpts OptsError _ = OptsError
 getOpts Help _ = Help
-getOpts conf ("-n" : x : xs) = getOpts conf {finalColorsNb = readMaybe x} xs
-getOpts conf ("-l" : x : xs) = getOpts conf {limit = readMaybe x} xs
-getOpts conf ("-f" : x : xs) =
+{- getOpts conf ("-n" : x : xs) = getOpts conf {finalColorsNb = readMaybe x} xs
+getOpts conf ("-l" : x : xs) = getOpts conf {limit = readMaybe x} xs -}
+{- getOpts conf ("-f" : x : xs) =
   let loadedImage = fmap parse (readFile x)
-   in getOpts conf {image = unsafeLocalState loadedImage} xs
+   in getOpts conf {image = unsafeLocalState loadedImage} xs -}
 getOpts _ _ = OptsError
