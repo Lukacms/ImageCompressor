@@ -5,7 +5,7 @@
 -- ArgumentsParser
 -}
 
-module ArgumentsParser (defaultConf, getOpts) where
+module ArgumentsParser (defaultConf, getOpts, Conf (..)) where
 
 import FileParser (Image (ParseError))
 import Text.Read
@@ -33,7 +33,7 @@ defaultConf = Conf (FinalColorNumber 0) (Limit 0) Invalid ParseError
 getOpts :: Conf -> [String] -> Conf
 getOpts _ ["-h"] = Help
 getOpts _ [_] = OptsError
-getOpts conf [] = conf
+getOpts conf [] = getOpts' conf
 getOpts (Conf _ limit filepath image) ("-n" : x : xs) =
   getOpts
     (Conf (FinalColorNumber $ checkValidityOfNumber x) limit filepath image)
@@ -47,6 +47,15 @@ getOpts (Conf finalColorNum limit _ image) ("-f" : x : xs) =
 getOpts OptsError _ = OptsError
 getOpts Help _ = Help
 getOpts _ _ = OptsError
+
+getOpts' :: Conf -> Conf
+getOpts' (Conf (FinalColorNumber num) (Limit lim) (Filepath path) image)
+  | num <= 0 = OptsError
+  | lim <= 0 = OptsError
+  | path == "" = OptsError
+  | otherwise = Conf (FinalColorNumber num) (Limit lim) (Filepath path) image
+getOpts' (Conf _ _ Invalid _) = OptsError
+getOpts' _ = OptsError
 
 checkValidityOfNumber :: String -> Int
 checkValidityOfNumber numStr = case readMaybe numStr of

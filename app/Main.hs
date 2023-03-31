@@ -7,17 +7,15 @@
 
 module Main (main) where
 
+import ArgumentsParser (Conf (Help, OptsError), defaultConf, getOpts)
+import Control.Exception (handle)
 import Help (printHelp)
-import Parser (Conf (..), defaultConf, getOpts)
+import ICException (exceptionHandler)
 import System.Environment (getArgs)
-import System.Exit
-  ( ExitCode (ExitFailure),
-    exitSuccess,
-    exitWith,
-  )
+import System.Exit (ExitCode (ExitFailure), exitSuccess, exitWith)
 
 main :: IO ()
-main = getArgs >>= launch . getOpts defaultConf
+main = handle exceptionHandler $ getArgs >>= launch . getOpts defaultConf
 
 launch :: Conf -> IO ()
 launch OptsError = printHelp >> exitWith (ExitFailure 84)
