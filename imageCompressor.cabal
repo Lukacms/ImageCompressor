@@ -25,9 +25,10 @@ source-repository head
 
 library
   exposed-modules:
+      ArgumentsParser
+      FileParser
       Help
       ImageType
-      Parser
   other-modules:
       Paths_imageCompressor
   hs-source-dirs:
@@ -40,6 +41,7 @@ library
 executable imageCompressor-exe
   main-is: Main.hs
   other-modules:
+      Exception
       Paths_imageCompressor
   hs-source-dirs:
       app

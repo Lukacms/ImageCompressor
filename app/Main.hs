@@ -19,7 +19,6 @@ import System.Exit
 main :: IO ()
 main = getArgs >>= launch . getOpts defaultConf
 
--- print dans le main, launch ne return que une string à print
 launch :: Conf -> IO ()
 launch OptsError = printHelp >> exitWith (ExitFailure 84)
 launch Help = printHelp >> exitSuccess
