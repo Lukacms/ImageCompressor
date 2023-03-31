@@ -12,9 +12,9 @@ module GraphicElements (
     Color(..),
     createNCluster,
     createAverageClusters,
+    getAverageColor,
     nearestCluster,
     assignPixelsToClusters,
-    createAverageColor,
     euclideanDistance,
 ) where
 
@@ -33,8 +33,12 @@ instance Show Color where
 
 instance Num Color where
     (+) (Color (r1,g1,b1)) (Color (r2,g2,b2)) = Color (r1+r2, g1+g2, b1+b2)
+    (-) (Color (r1,g1,b1)) (Color (r2,g2,b2)) = Color (r1-r2, g1-g2, b1-b2)
     (*) (Color (r1,g1,b1)) (Color (r2,g2,b2)) = Color (r1*r2, g1*g2, b1*b2)
     abs (Color (r,g,b)) = Color (abs r, abs g, abs b)
+    signum (Color (r,g,b)) = Color (signum r, signum g, signum b)
+    negate (Color (r,g,b)) = Color (negate r, negate g, negate b)
+    fromInteger x = Color (fromInteger x, fromInteger x, fromInteger x)
 
 instance Show Cluster where
     show (Cluster color pixels) = "--\n" ++ show color ++ "\n-\n" ++ intercalate "\n" (map show pixels)
@@ -47,11 +51,12 @@ instance Show Point where
 
 createNCluster :: Int -> [(Int, Int, Int)] -> [Cluster]
 createNCluster 0 _ = []
-createNCluster x random:xs = Cluster (Color random) [] : createNCluster (x - 1) xs
+createNCluster _ [] = []
+createNCluster x (random:xs) = Cluster (Color random) [] : createNCluster (x - 1) xs
 
 createAverageClusters :: [Cluster] -> [Cluster]
 createAverageClusters [] = []
-createAverageClusters ((Cluster _ pixels):xs) = Cluster (createAverageColor pixels) [] : createAverageClusters xs
+createAverageClusters ((Cluster _ pixels):xs) = Cluster (getAverageColor pixels) [] : createAverageClusters xs
 
 nearestCluster :: Cluster -> Pixel -> [Cluster] -> [Cluster]
 nearestCluster (Cluster color pixels) pixel [] = [Cluster color (pixel : pixels)]
@@ -61,12 +66,21 @@ nearestCluster (Cluster a b) (Pixel c d) ((Cluster e f):xs)
 
 assignPixelsToClusters :: [(Point, Color)] -> [Cluster] -> [Cluster]
 assignPixelsToClusters [] clusters = clusters
+assignPixelsToClusters _ [] = []
 assignPixelsToClusters ((p, c): xs) (cl:cls) = assignPixelsToClusters xs (nearestCluster cl (Pixel p c) cls)
 
 euclideanDistance :: Color -> Color -> Double
-euclideanDistance (Color (r1,g1,b1)) (Color (r2,g2,b2)) = sqrt ((fromIntegral r1 - fromIntegral r2)^2
-    + (fromIntegral g1 - fromIntegral g2)^2 + (fromIntegral b1 - fromIntegral b2)^2)
+euclideanDistance (Color (r1,g1,b1)) (Color (r2,g2,b2)) = sqrt ((fromIntegral r1 - fromIntegral r2)**2
+    + (fromIntegral g1 - fromIntegral g2)**2 + (fromIntegral b1 - fromIntegral b2)**2)
 
-createAverageColor :: [Pixel] -> Color
-createAverageColor [Pixel _ color] = color
-createAverageColor ((Pixel _ color) : xs) = color + createAverageColor xs
+getAverageColor :: [Pixel] -> Color
+getAverageColor pixels = generateAverageColor (addAllColors pixels) (length pixels)
+
+generateAverageColor :: Color -> Int -> Color
+generateAverageColor color 0 = color
+generateAverageColor (Color (r, g, b)) len = Color (r `div` len  ,g `div` len, b `div` len)
+
+addAllColors :: [Pixel] -> Color
+addAllColors [] = 0
+addAllColors [Pixel _ color] = color
+addAllColors ((Pixel _ color) : xs) = color + addAllColors xs
