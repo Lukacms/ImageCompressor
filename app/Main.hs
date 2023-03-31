@@ -12,11 +12,13 @@ import           Parser             (Conf (..), defaultConf, getOpts)
 import           System.Environment (getArgs)
 import           System.Exit        (ExitCode (ExitFailure), exitSuccess,
                                      exitWith)
+import           RandomNumber       (createListOfRandomNumbers)
+
+
+main:: IO ()
+main = getArgs >>= launch . getOpts defaultConf
 
 launch:: Conf -> IO()
 launch OptsError = printHelp >> exitWith (ExitFailure 84)
 launch Help      = printHelp >> exitSuccess
 launch _         = exitSuccess
-
-main:: IO ()
-main = getArgs >>= launch . getOpts defaultConf

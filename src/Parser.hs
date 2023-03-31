@@ -7,8 +7,7 @@
 {-# OPTIONS_GHC -Wno-partial-fields #-}
 
 module Parser
-  ( Point (..),
-    Color (..),
+  ( 
     getOpts,
     Image (..),
     defaultConf,
@@ -17,7 +16,7 @@ module Parser
 where
 
 import Foreign.Marshal.Unsafe
-import ImageType ( Point(..), Color(..) )
+import GraphicElements (Point(..), Color(..))
 import Text.Read (readMaybe)
 
 data Image = ParseError | Image [(Point, Color)] deriving (Show)
