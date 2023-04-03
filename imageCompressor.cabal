@@ -26,8 +26,8 @@ source-repository head
 library
   exposed-modules:
       Algorithm
+      GraphicElements
       Help
-      ImageType
       Lib
       Parser
   other-modules:
@@ -43,6 +43,7 @@ library
 executable imageCompressor-exe
   main-is: Main.hs
   other-modules:
+      RandomNumber
       Paths_imageCompressor
   hs-source-dirs:
       app
