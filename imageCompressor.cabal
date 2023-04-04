@@ -25,9 +25,10 @@ source-repository head
 
 library
   exposed-modules:
-      Help
-      ImageType
-      Parser
+      Algorithm
+      ArgumentsParser
+      FileParser
+      GraphicElements
   other-modules:
       Paths_imageCompressor
   hs-source-dirs:
@@ -35,11 +36,15 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , random
   default-language: Haskell2010
 
 executable imageCompressor-exe
   main-is: Main.hs
   other-modules:
+      Help
+      ICException
+      RandomNumber
       Paths_imageCompressor
   hs-source-dirs:
       app
@@ -47,6 +52,7 @@ executable imageCompressor-exe
   build-depends:
       base >=4.7 && <5
     , imageCompressor
+    , random
   default-language: Haskell2010
 
 test-suite imageCompressor-test
@@ -60,4 +66,5 @@ test-suite imageCompressor-test
   build-depends:
       base >=4.7 && <5
     , imageCompressor
+    , random
   default-language: Haskell2010
