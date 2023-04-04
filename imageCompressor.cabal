@@ -29,7 +29,6 @@ library
       ArgumentsParser
       FileParser
       GraphicElements
-      Lib
   other-modules:
       Paths_imageCompressor
   hs-source-dirs:
