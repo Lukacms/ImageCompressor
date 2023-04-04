@@ -15,7 +15,7 @@ module GraphicElements (
     getAverageColor,
     nearestCluster,
     assignPixelsToClusters,
-    euclideanDistance,
+    euclideanDistance
 ) where
 
 import Data.List (intercalate)
@@ -41,7 +41,7 @@ instance Num Color where
     fromInteger x = Color (fromInteger x, fromInteger x, fromInteger x)
 
 instance Show Cluster where
-    show (Cluster color pixels) = "--\n" ++ show color ++ "\n-\n" ++ intercalate "\n" (map show pixels)
+    show (Cluster color pixels) = "--\n" ++ show color ++ "\n-\n" ++ intercalate "\n" (map show pixels) ++ "\n"
 
 instance Show Pixel where
   show (Pixel x y) = show x ++ " " ++ show y
@@ -60,14 +60,14 @@ createAverageClusters ((Cluster _ pixels):xs) = Cluster (getAverageColor pixels)
 
 nearestCluster :: Cluster -> Pixel -> [Cluster] -> [Cluster]
 nearestCluster (Cluster color pixels) pixel [] = [Cluster color (pixel : pixels)]
-nearestCluster (Cluster a b) (Pixel c d) ((Cluster e f):xs)
-    | euclideanDistance a d > euclideanDistance e d = Cluster a b : nearestCluster (Cluster e f) (Pixel c d) xs
-    | otherwise = Cluster e f : nearestCluster (Cluster a b) (Pixel c d) xs
+nearestCluster (Cluster color1 pixels1) (Pixel point color2) ((Cluster color3 pixels2):xs)
+    | euclideanDistance color1 color2 > euclideanDistance color3 color2 = Cluster color1 pixels1 : nearestCluster (Cluster color3 pixels2) (Pixel point color2) xs
+    | otherwise = Cluster color3 pixels2 : nearestCluster (Cluster color1 pixels1) (Pixel point color2) xs
 
-assignPixelsToClusters :: [(Point, Color)] -> [Cluster] -> [Cluster]
+assignPixelsToClusters :: [Pixel] -> [Cluster] -> [Cluster]
 assignPixelsToClusters [] clusters = clusters
+assignPixelsToClusters ((Pixel point color):xs) (cl:cls) = assignPixelsToClusters xs (nearestCluster cl (Pixel point color) cls)
 assignPixelsToClusters _ [] = []
-assignPixelsToClusters ((p, c): xs) (cl:cls) = assignPixelsToClusters xs (nearestCluster cl (Pixel p c) cls)
 
 euclideanDistance :: Color -> Color -> Double
 euclideanDistance (Color (r1,g1,b1)) (Color (r2,g2,b2)) = sqrt ((fromIntegral r1 - fromIntegral r2)**2

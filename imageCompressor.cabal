@@ -26,10 +26,10 @@ source-repository head
 library
   exposed-modules:
       Algorithm
+      ArgumentsParser
+      FileParser
       GraphicElements
-      Help
       Lib
-      Parser
   other-modules:
       Paths_imageCompressor
   hs-source-dirs:
@@ -43,6 +43,8 @@ library
 executable imageCompressor-exe
   main-is: Main.hs
   other-modules:
+      Help
+      ICException
       RandomNumber
       Paths_imageCompressor
   hs-source-dirs:
