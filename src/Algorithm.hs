@@ -18,8 +18,6 @@ import GraphicElements (Cluster(..),
 import ArgumentsParser (Conf(..), Limit(..))
 import FileParser (Image(..))
 
-import Debug.Trace (trace)
-
 compress :: [Cluster] -> Conf -> [Cluster]
 compress clusters conf = compress' conf clusters []
 
@@ -27,7 +25,7 @@ compress' :: Conf -> [Cluster] -> [Cluster] -> [Cluster]
 compress' (Conf nbr limit path image) oldClusters [] = compress' (Conf nbr limit path image) (assignPixelsToClusters (imageToPixels image) oldClusters) $ createAverageClusters $ assignPixelsToClusters (imageToPixels image) oldClusters
 compress' (Conf nbr limit path image) oldClusters newClusters 
     | isLimitReached limit oldClusters newClusters = assignPixelsToClusters (imageToPixels image) newClusters
-    | otherwise = trace (show oldClusters) trace (show newClusters) compress' (Conf nbr limit path image) (createAverageClusters oldClusters) $ createAverageClusters $ assignPixelsToClusters (imageToPixels image) newClusters
+    | otherwise = compress' (Conf nbr limit path image) (createAverageClusters oldClusters) $ createAverageClusters $ assignPixelsToClusters (imageToPixels image) newClusters
 
 imageToPixels :: Image -> [Pixel]
 imageToPixels (Image []) = []
