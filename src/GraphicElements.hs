@@ -56,28 +56,44 @@ createNCluster x (random:xs) = Cluster (Color random) [] : createNCluster (x - 1
 
 createAverageClusters :: [Cluster] -> [Cluster]
 createAverageClusters [] = []
+createAverageClusters ((Cluster color []):xs) = Cluster color [] : createAverageClusters xs
 createAverageClusters ((Cluster _ pixels):xs) = Cluster (getAverageColor pixels) [] : createAverageClusters xs
 
-nearestCluster :: Cluster -> Pixel -> [Cluster] -> [Cluster]
-nearestCluster (Cluster color pixels) pixel [] = [Cluster color (pixel : pixels)]
-nearestCluster (Cluster color1 pixels1) (Pixel point color2) ((Cluster color3 pixels2):xs)
-    | euclideanDistance color1 color2 > euclideanDistance color3 color2 = Cluster color1 pixels1 : nearestCluster (Cluster color3 pixels2) (Pixel point color2) xs
-    | otherwise = Cluster color3 pixels2 : nearestCluster (Cluster color1 pixels1) (Pixel point color2) xs
+-- nearestCluster :: Cluster -> Pixel -> [Cluster] -> [Cluster]
+-- nearestCluster (Cluster color pixels) pixel [] = [Cluster color (pixel : pixels)]
+-- nearestCluster (Cluster color1 pixels1) (Pixel point color2) ((Cluster color3 pixels2):xs)
+--     | euclideanDistance color1 color2 > euclideanDistance color3 color2
+--       = Cluster color1 pixels1 : nearestCluster (Cluster color3 pixels2) (Pixel point color2) xs
+--     | otherwise = Cluster color3 pixels2 : nearestCluster (Cluster color1 pixels1) (Pixel point color2) xs
+
+nearestCluster :: Pixel -> [Cluster] -> [Cluster] -> [Cluster]
+nearestCluster _ [] _ = []
+nearestCluster pixel ((Cluster color pix):cls) cl
+  | nearestCluster' pixel cl == Cluster color pix = Cluster color (pixel:pix) : nearestCluster pixel cls cl
+  | otherwise = Cluster color pix  : nearestCluster pixel cls cl
+
+nearestCluster' :: Pixel -> [Cluster] -> Cluster
+nearestCluster' (Pixel _ color) [Cluster color1 pix1, Cluster color2 pix2]
+  | euclideanDistance color color1 < euclideanDistance color color2 = Cluster color1 pix1
+  | otherwise = Cluster color2 pix2
+nearestCluster' (Pixel point color) ((Cluster color1 pix1):(Cluster color2 pix2):cls)
+  | euclideanDistance color color1 < euclideanDistance color color2
+    = nearestCluster' (Pixel point color) $ Cluster color1 pix1 : cls
+  | otherwise = nearestCluster' (Pixel point color) $ Cluster color2 pix2 : cls
+nearestCluster' _ _ = Cluster (Color (0, 0, 0)) []
 
 assignPixelsToClusters :: [Pixel] -> [Cluster] -> [Cluster]
 assignPixelsToClusters [] clusters = clusters
-assignPixelsToClusters ((Pixel point color):xs) (cl:cls) = assignPixelsToClusters xs (nearestCluster cl (Pixel point color) cls)
-assignPixelsToClusters _ [] = []
+assignPixelsToClusters (pixel:ps) clusters = assignPixelsToClusters ps $ nearestCluster pixel clusters clusters
 
 euclideanDistance :: Color -> Color -> Double
-euclideanDistance (Color (r1,g1,b1)) (Color (r2,g2,b2)) = sqrt ((fromIntegral r1 - fromIntegral r2)**2
-    + (fromIntegral g1 - fromIntegral g2)**2 + (fromIntegral b1 - fromIntegral b2)**2)
+euclideanDistance (Color (r1,g1,b1)) (Color (r2,g2,b2)) = sqrt((fromIntegral r1 - fromIntegral r2)**2 + (fromIntegral g1 - fromIntegral g2)**2 + (fromIntegral b1 - fromIntegral b2)**2)
 
 getAverageColor :: [Pixel] -> Color
 getAverageColor pixels = generateAverageColor (addAllColors pixels) (length pixels)
 
 generateAverageColor :: Color -> Int -> Color
-generateAverageColor color 0 = color
+generateAverageColor _ 0 = 0
 generateAverageColor (Color (r, g, b)) len = Color (r `div` len  ,g `div` len, b `div` len)
 
 addAllColors :: [Pixel] -> Color

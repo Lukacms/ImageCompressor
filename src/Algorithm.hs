@@ -22,10 +22,12 @@ compress :: [Cluster] -> Conf -> [Cluster]
 compress clusters conf = compress' conf clusters []
 
 compress' :: Conf -> [Cluster] -> [Cluster] -> [Cluster]
-compress' (Conf nbr limit path image) oldClusters [] = compress' (Conf nbr limit path image) (assignPixelsToClusters (imageToPixels image) oldClusters) $ createAverageClusters $ assignPixelsToClusters (imageToPixels image) oldClusters
+compress' (Conf nbr limit path image) oldClusters []
+    = compress' (Conf nbr limit path image) oldClusters $ createAverageClusters $ assignPixelsToClusters (imageToPixels image) oldClusters
 compress' (Conf nbr limit path image) oldClusters newClusters 
     | isLimitReached limit oldClusters newClusters = assignPixelsToClusters (imageToPixels image) newClusters
-    | otherwise = compress' (Conf nbr limit path image) (createAverageClusters oldClusters) $ createAverageClusters $ assignPixelsToClusters (imageToPixels image) newClusters
+    | otherwise = compress' (Conf nbr limit path image) (createAverageClusters (assignPixelsToClusters (imageToPixels image) newClusters))
+        $ createAverageClusters $ assignPixelsToClusters (imageToPixels image) newClusters
 
 imageToPixels :: Image -> [Pixel]
 imageToPixels (Image []) = []
