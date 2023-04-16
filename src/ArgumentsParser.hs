@@ -5,8 +5,17 @@
 -- ArgumentsParser
 -}
 
-module ArgumentsParser (defaultConf, getOpts, Conf (..), Limit(..), FinalColorNumber(..), Filepath(..)) where
+module ArgumentsParser
+  ( defaultConf,
+    getOpts,
+    Conf (..),
+    Limit (..),
+    FinalColorNumber (..),
+    Filepath (..),
+  )
+where
 
+import Control.Applicative (Alternative (empty))
 import FileParser (Image (ParseError))
 import Text.Read
 
@@ -52,7 +61,7 @@ getOpts' :: Conf -> Conf
 getOpts' (Conf (FinalColorNumber num) (Limit lim) (Filepath path) image)
   | num <= 0 = OptsError
   | lim <= 0 = OptsError
-  | path == "" = OptsError
+  | null path = OptsError
   | otherwise = Conf (FinalColorNumber num) (Limit lim) (Filepath path) image
 getOpts' (Conf _ _ Invalid _) = OptsError
 getOpts' _ = OptsError
