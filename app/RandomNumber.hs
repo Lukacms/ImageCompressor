@@ -5,9 +5,10 @@
 -- RandomNumber
 -}
 
-module RandomNumber (
-    createListOfRandomNumbers
-) where
+module RandomNumber
+  ( createListOfRandomNumbers,
+  )
+where
 
 import System.Random
 
@@ -19,4 +20,11 @@ import System.Random
 
 createListOfRandomNumbers :: Int -> IO [(Int, Int, Int)]
 createListOfRandomNumbers 0 = return []
-createListOfRandomNumbers nbr = (:) <$> ((,,) <$> randomRIO (0,255) <*> randomRIO (0,255) <*> randomRIO (0,255)) <*> createListOfRandomNumbers (nbr - 1)
+createListOfRandomNumbers nbr =
+  (:)
+    <$> ( (,,)
+            <$> randomRIO (0, 255)
+            <*> randomRIO (0, 255)
+            <*> randomRIO (0, 255)
+        )
+    <*> createListOfRandomNumbers (nbr - 1)
