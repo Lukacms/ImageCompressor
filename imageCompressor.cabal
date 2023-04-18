@@ -29,6 +29,7 @@ library
       ArgumentsParser
       FileParser
       GraphicElements
+      ICException
   other-modules:
       Paths_imageCompressor
   hs-source-dirs:
@@ -43,7 +44,6 @@ executable imageCompressor-exe
   main-is: Main.hs
   other-modules:
       Help
-      ICException
       RandomNumber
       Paths_imageCompressor
   hs-source-dirs:

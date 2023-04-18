@@ -16,9 +16,11 @@ import ArgumentsParser
     defaultConf,
     getOpts,
   )
+import Control.Exception
 import FileParser (parse)
 import GraphicElements (createNCluster)
 import Help (printHelp)
+import ICException (exceptionHandler)
 import RandomNumber (createListOfRandomNumbers)
 import System.Environment (getArgs)
 import System.Exit
@@ -28,7 +30,7 @@ import System.Exit
   )
 
 main :: IO ()
-main = getArgs >>= launch . getOpts defaultConf
+main = handle exceptionHandler $ getArgs >>= launch . getOpts defaultConf
 
 setImage :: Conf -> String -> Conf
 setImage (Conf nbr limit (Filepath path) _) str =
