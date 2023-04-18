@@ -5,7 +5,7 @@
 -- Exception
 -}
 
-module ICException (exceptionHandler) where
+module ICException (exceptionHandler, ICException (..)) where
 
 import Control.Exception
 import System.Exit (ExitCode (ExitFailure), exitWith)
@@ -25,5 +25,5 @@ instance Exception ICException
 
 exceptionHandler :: ICException -> IO ()
 exceptionHandler ArgumentException = exitWith $ ExitFailure 84
-exceptionHandler ImageFormatException = return ()
-exceptionHandler RuntimeException = return ()
+exceptionHandler ImageFormatException = exitWith $ ExitFailure 84
+exceptionHandler RuntimeException = exitWith $ ExitFailure 84

@@ -15,8 +15,9 @@ module ArgumentsParser
   )
 where
 
-import Control.Applicative (Alternative (empty))
+import Control.Exception (throw)
 import FileParser (Image (ParseError))
+import ICException (ICException (ArgumentException))
 import Text.Read
 
 -- useful types
@@ -69,9 +70,9 @@ getOpts' _ = OptsError
 checkValidityOfNumber :: String -> Int
 checkValidityOfNumber numStr = case readMaybe numStr of
   (Just num) -> num
-  _ -> 0 -- throw error
+  _ -> throw ArgumentException
 
 checkValidityOfDouble :: String -> Double
 checkValidityOfDouble numStr = case readMaybe numStr of
   (Just num) -> num
-  _ -> 0 -- throw error
+  _ -> throw ArgumentException
