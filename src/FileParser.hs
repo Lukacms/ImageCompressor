@@ -16,7 +16,7 @@ import Text.Read
 
 -- useful data
 
-data Image = ParseError | Image [(Point, Color)] deriving (Show)
+data Image = ParseError | Image [(Point, Color)] deriving (Show, Eq)
 
 -- function
 parse :: String -> Image
