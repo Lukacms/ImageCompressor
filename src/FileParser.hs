@@ -9,7 +9,9 @@ module FileParser (Image (..), parse) where
 
 -- useful types
 
+import Control.Exception (throw)
 import GraphicElements (Color (..), Point (..))
+import ICException (ICException (ImageFormatException))
 import Text.Read
 
 -- useful data
@@ -26,7 +28,7 @@ parseFile (x : xs) = Image (readLine (words x) : parseFile' (parseFile xs))
 
 parseFile' :: Image -> [(Point, Color)]
 parseFile' (Image img) = img
-parseFile' ParseError = [] -- throw error
+parseFile' ParseError = throw ImageFormatException
 
 readLine :: [String] -> (Point, Color)
 readLine (x : s : _) = (readPoint x, readColor s)
@@ -36,9 +38,9 @@ readLine _ = (Point (0, 0), Color (0, 0, 0))
 readPoint :: String -> Point
 readPoint x = case readMaybe x of
   (Just (a, b)) -> Point (a, b)
-  _ -> Point (0, 0) -- throw an error
+  _ -> throw ImageFormatException
 
 readColor :: String -> Color
 readColor x = case readMaybe x of
   (Just (a, b, c)) -> Color (a, b, c)
-  _ -> Color (0, 0, 0) -- throw an error
+  _ -> throw ImageFormatException
