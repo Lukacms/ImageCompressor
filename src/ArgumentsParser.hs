@@ -15,17 +15,16 @@ module ArgumentsParser
   )
 where
 
-import Control.Applicative (Alternative (empty))
 import FileParser (Image (ParseError))
 import Text.Read
 
 -- useful types
 
-newtype FinalColorNumber = FinalColorNumber Int
+newtype FinalColorNumber = FinalColorNumber Int deriving (Eq, Show)
 
-newtype Limit = Limit Double
+newtype Limit = Limit Double deriving (Eq, Show)
 
-data Filepath = Invalid | Filepath String
+data Filepath = Invalid | Filepath String deriving (Eq, Show)
 
 -- useful data
 
@@ -33,6 +32,7 @@ data Conf
   = OptsError
   | Help
   | Conf FinalColorNumber Limit Filepath Image
+  deriving (Eq, Show)
 
 -- functions
 

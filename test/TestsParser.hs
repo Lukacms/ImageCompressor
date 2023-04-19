@@ -7,14 +7,10 @@
 
 module TestsParser (testParser) where
 
-import Parser (Conf (..), Point (Point), defaultConf)
+import ArgumentsParser (Conf (..), defaultConf)
 import Test.Hspec
 
 testParser :: Spec
 testParser =
   describe "Parser test" $
     it "Should do nothing much" (defaultConf `shouldNotBe` OptsError)
-      >> testParserPoint
-
-testParserPoint :: Spec
-testParserPoint = it "Should test Point" (Point (1, 2) `shouldBe` Point (1, 2))
